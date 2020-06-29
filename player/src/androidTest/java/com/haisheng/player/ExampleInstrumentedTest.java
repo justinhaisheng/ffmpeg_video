@@ -1,4 +1,4 @@
-package com.aispeech.music;
+package com.haisheng.player;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.aispeech.music", appContext.getPackageName());
+        assertEquals("com.aispeech.player.test", appContext.getPackageName());
     }
 }

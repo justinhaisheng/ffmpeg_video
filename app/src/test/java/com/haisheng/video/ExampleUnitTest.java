@@ -1,4 +1,4 @@
-package com.aispeech.music;
+package com.haisheng.video;
 
 import org.junit.Test;
 

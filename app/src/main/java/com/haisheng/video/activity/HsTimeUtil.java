@@ -1,4 +1,4 @@
-package com.aispeech.music.activity;
+package com.haisheng.video.activity;
 
 /**
  * Created by ywl on 2017-12-22.

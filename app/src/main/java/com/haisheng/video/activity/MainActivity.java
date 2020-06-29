@@ -1,9 +1,9 @@
-package com.aispeech.music.activity;
+package com.haisheng.video.activity;
 
 import android.os.Bundle;
 import android.util.Log;
 
-import com.aispeech.music.R;
+import com.haisheng.video.R;
 import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.XXPermissions;
 

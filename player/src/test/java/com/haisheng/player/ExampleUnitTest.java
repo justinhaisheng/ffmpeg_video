@@ -1,4 +1,4 @@
-package com.aispeech.player;
+package com.haisheng.player;
 
 import org.junit.Test;
 

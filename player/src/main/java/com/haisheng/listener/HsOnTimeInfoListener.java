@@ -1,7 +1,7 @@
-package com.aispeech.listener;
+package com.haisheng.listener;
 
 
-import com.aispeech.HsTimeInfoBean;
+import com.haisheng.HsTimeInfoBean;
 
 /**
  * Created by yangw on 2018-3-25.

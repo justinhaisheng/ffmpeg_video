@@ -1,4 +1,4 @@
-package com.aispeech.music.activity;
+package com.haisheng.video.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,14 +10,14 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.aispeech.HsTimeInfoBean;
-import com.aispeech.listener.HsCompleteListener;
-import com.aispeech.listener.HsErrorListener;
-import com.aispeech.listener.HsLoadingListener;
-import com.aispeech.listener.HsOnTimeInfoListener;
-import com.aispeech.listener.HsPrepareListener;
-import com.aispeech.music.R;
-import com.aispeech.player.HsPlay;
+import com.haisheng.HsTimeInfoBean;
+import com.haisheng.listener.HsCompleteListener;
+import com.haisheng.listener.HsErrorListener;
+import com.haisheng.listener.HsLoadingListener;
+import com.haisheng.listener.HsOnTimeInfoListener;
+import com.haisheng.listener.HsPrepareListener;
+import com.haisheng.video.R;
+import com.haisheng.player.HsPlay;
 
 import androidx.appcompat.app.AppCompatActivity;
 

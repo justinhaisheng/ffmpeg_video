@@ -1,14 +1,14 @@
-package com.aispeech.player;
+package com.haisheng.player;
 
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.aispeech.HsTimeInfoBean;
-import com.aispeech.listener.HsCompleteListener;
-import com.aispeech.listener.HsErrorListener;
-import com.aispeech.listener.HsLoadingListener;
-import com.aispeech.listener.HsOnTimeInfoListener;
-import com.aispeech.listener.HsPrepareListener;
+import com.haisheng.HsTimeInfoBean;
+import com.haisheng.listener.HsCompleteListener;
+import com.haisheng.listener.HsErrorListener;
+import com.haisheng.listener.HsLoadingListener;
+import com.haisheng.listener.HsOnTimeInfoListener;
+import com.haisheng.listener.HsPrepareListener;
 
 /**
  * @创建者 luhaisheng
