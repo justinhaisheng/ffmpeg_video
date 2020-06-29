@@ -2,6 +2,7 @@
 // Created by haisheng on 2020/5/11.
 //
 
+
 #include "HsAudio.h"
 
 HsAudio::HsAudio(HsPlaystatus* playstatus,HsCalljava* calljava,AVCodecParameters *codecpar,int streamIndex) {
@@ -124,6 +125,7 @@ int HsAudio::resampleAudio() {
                 this->playstatus->load = true;
                 this->calljava->onCallLoading(this->playstatus->load,CHILD_THREAD);
             }
+            av_usleep(1000*100);
             continue;
         }else{
             if (this->playstatus->load){
@@ -149,6 +151,7 @@ int HsAudio::resampleAudio() {
             if (LOG_DEBUG){
                 LOGE("avcodec_send_packet!=0");
             }
+            av_usleep(1000*100);
             av_packet_free(&avPacket);
             av_free(avPacket);
             avPacket = NULL;
@@ -160,6 +163,7 @@ int HsAudio::resampleAudio() {
             if (LOG_DEBUG){
                 LOGE("avcodec_receive_frame!=0");
             }
+            av_usleep(1000*100);
             av_packet_free(&avPacket);
             av_free(avPacket);
             avPacket = NULL;
@@ -201,7 +205,7 @@ int HsAudio::resampleAudio() {
             if (LOG_DEBUG){
                 LOGE("swr_init(swr_ctx) == AVERROR");
             }
-
+            av_usleep(1000*100);
             av_packet_free(&avPacket);
             av_free(avPacket);
             avPacket = NULL;

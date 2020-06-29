@@ -163,6 +163,7 @@ void HsFFmpeg::startFFmpegThread() {
     int count = 0;
     while(playstatus != NULL && !playstatus->exit){
         if(this->playstatus->seek){
+            av_usleep(1000*100);
             if(LOG_DEBUG){
                 LOGD("seek ...");
             }
@@ -170,6 +171,7 @@ void HsFFmpeg::startFFmpegThread() {
         }
         if(audio->queue->getQueueSize() > 40)//防止已经被解码完成，seek的时候会清空队列数据。
         {
+            av_usleep(1000*100);
             if(LOG_DEBUG){
                 LOGD("队列已满40 ...");
             }
@@ -199,6 +201,7 @@ void HsFFmpeg::startFFmpegThread() {
             av_free(avPacket);
             while (playstatus && !playstatus->exit){
                 if (this->audio->queue->getQueueSize() > 0){
+                    av_usleep(1000*100);
                     continue;
                 }else{
                     playstatus->exit = true;
