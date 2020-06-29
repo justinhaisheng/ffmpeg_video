@@ -90,8 +90,8 @@ void HsAudio::initOpenSLES() {
 
     SLDataSource slDataSource = {&android_queue, &pcm};
     SLDataSink audioSnk = {&outputMix, NULL};
-    const SLInterfaceID ids[1] = {SL_IID_BUFFERQUEUE};
-    const SLboolean req[1] = {SL_BOOLEAN_TRUE};
+    const SLInterfaceID ids[2] = {SL_IID_BUFFERQUEUE,SL_IID_PLAYBACKRATE};
+    const SLboolean req[2] = {SL_BOOLEAN_TRUE,SL_BOOLEAN_TRUE};
     result = (*engineEngine)->CreateAudioPlayer(engineEngine, &pcmPlayerObject, &slDataSource, &audioSnk,1, ids, req);
     (void)result;
     // 初始化播放器
