@@ -29,12 +29,15 @@ public class MusicActivity extends AppCompatActivity {
     private TextView tvTime;
     SeekBar mSeekBar;
     private int mPlayPosition = 0;
+    private SeekBar mVolumeSeekBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music);
         tvTime = findViewById(R.id.tv_time);
         mSeekBar = findViewById(R.id.seekbar_seek);
+        mVolumeSeekBar = findViewById(R.id.seekbar_volume);
         mHsPlay = new HsPlay();
         mHsPlay.setHsPrepareListener(new HsPrepareListener() {
             @Override
@@ -114,6 +117,24 @@ public class MusicActivity extends AppCompatActivity {
                     mHsPlay.seek(mPlayPosition);
                 }
                 isSeek = false;
+            }
+        });
+        mVolumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser){
+                    mHsPlay.seekVolume(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
     }

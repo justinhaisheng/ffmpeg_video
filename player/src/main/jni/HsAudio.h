@@ -49,6 +49,8 @@ public:
     //pcm
     SLObjectItf pcmPlayerObject = NULL;
     SLPlayItf pcmPlayerPlay = NULL;
+    //volume
+    SLVolumeItf volumeObject = NULL;
     //缓冲器队列接口
     SLAndroidSimpleBufferQueueItf pcmBufferQueue = NULL;
 public:
@@ -63,6 +65,7 @@ public:
     int resampleAudio();
     void stop();
     void release();
+    void seekVolume(int volume);
 };
 
 

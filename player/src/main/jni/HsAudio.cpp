@@ -90,9 +90,9 @@ void HsAudio::initOpenSLES() {
 
     SLDataSource slDataSource = {&android_queue, &pcm};
     SLDataSink audioSnk = {&outputMix, NULL};
-    const SLInterfaceID ids[2] = {SL_IID_BUFFERQUEUE,SL_IID_PLAYBACKRATE};
-    const SLboolean req[2] = {SL_BOOLEAN_TRUE,SL_BOOLEAN_TRUE};
-    result = (*engineEngine)->CreateAudioPlayer(engineEngine, &pcmPlayerObject, &slDataSource, &audioSnk,2, ids, req);
+    const SLInterfaceID ids[3] = {SL_IID_BUFFERQUEUE,SL_IID_VOLUME,SL_IID_PLAYBACKRATE};
+    const SLboolean req[3] = {SL_BOOLEAN_TRUE,SL_BOOLEAN_TRUE,SL_BOOLEAN_TRUE};
+    result = (*engineEngine)->CreateAudioPlayer(engineEngine, &pcmPlayerObject, &slDataSource, &audioSnk,3, ids, req);
     (void)result;
     // 初始化播放器
     result = (*pcmPlayerObject)->Realize(pcmPlayerObject, SL_BOOLEAN_FALSE);
@@ -100,6 +100,13 @@ void HsAudio::initOpenSLES() {
     //得到接口后调用  获取Player接口
     result = (*pcmPlayerObject)->GetInterface(pcmPlayerObject, SL_IID_PLAY, &pcmPlayerPlay);
     (void)result;
+
+    //获取音量的接口
+    result = (*pcmPlayerObject)->GetInterface(pcmPlayerObject,SL_IID_VOLUME,&volumeObject);
+    (void)result;
+
+
+
     //第四步---------------------------------------
     // 创建缓冲区和回调函数
     result = (*pcmPlayerObject)->GetInterface(pcmPlayerObject, SL_IID_BUFFERQUEUE, &pcmBufferQueue);
@@ -372,5 +379,46 @@ void HsAudio::release() {
     this->play_clock = 0;
     this->play_last_clock = 0;
     this->total_duration = 0;
+}
+
+void HsAudio::seekVolume(int volume) {
+    if(volumeObject){
+        //this->volume = volume;
+        if(volume > 30)
+        {
+            (*volumeObject)->SetVolumeLevel(volumeObject, (100 - volume) * -20);
+        }
+        else if(volume > 25)
+        {
+            (*volumeObject)->SetVolumeLevel(volumeObject, (100 - volume) * -22);
+        }
+        else if(volume > 20)
+        {
+            (*volumeObject)->SetVolumeLevel(volumeObject, (100 - volume) * -25);
+        }
+        else if(volume > 15)
+        {
+            (*volumeObject)->SetVolumeLevel(volumeObject, (100 - volume) * -28);
+        }
+        else if(volume > 10)
+        {
+            (*volumeObject)->SetVolumeLevel(volumeObject, (100 - volume) * -30);
+        }
+        else if(volume > 5)
+        {
+            (*volumeObject)->SetVolumeLevel(volumeObject, (100 - volume) * -34);
+        }
+        else if(volume > 3)
+        {
+            (*volumeObject)->SetVolumeLevel(volumeObject, (100 - volume) * -37);
+        }
+        else if(volume > 0)
+        {
+            (*volumeObject)->SetVolumeLevel(volumeObject, (100 - volume) * -40);
+        }
+        else{
+            (*volumeObject)->SetVolumeLevel(volumeObject, (100 - volume) * -100);
+        }
+    }
 }
 

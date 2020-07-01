@@ -307,3 +307,9 @@ void HsFFmpeg::seek(int64_t secs) {
     this->playstatus->seek = false;
 
 }
+
+void HsFFmpeg::seekVolume(int volume) {
+    if(audio){
+        audio->seekVolume(volume);
+    }
+}

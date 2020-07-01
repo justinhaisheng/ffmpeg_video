@@ -110,6 +110,14 @@ JNIEXPORT void JNICALL Java_com_haisheng_player_HsPlay_n_1seek
 }
 
 extern "C"
+JNIEXPORT void JNICALL Java_com_haisheng_player_HsPlay_n_1seekVolume
+        (JNIEnv *, jobject, jint volume){
+    if(ffmpeg){
+        ffmpeg->seekVolume(volume);
+    }
+}
+
+extern "C"
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved){
     jint result = -1;
     javaVM = vm;
