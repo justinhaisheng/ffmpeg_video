@@ -301,6 +301,7 @@ void HsFFmpeg::seek(int64_t secs) {
     this->audio->play_last_clock = 0;
     pthread_mutex_lock(&seek_mutex);
     int64_t rel_secs = secs * AV_TIME_BASE;
+    avcodec_flush_buffers(audio->avCodecContext);
     avformat_seek_file(this->pFormatContext,-1,INT64_MIN,rel_secs,INT32_MAX,0);
     pthread_mutex_unlock(&seek_mutex);
     this->playstatus->seek = false;
