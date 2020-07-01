@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MusicActivity extends AppCompatActivity {
 
+    private static final String TAG = MusicActivity.class.getSimpleName();
     HsPlay mHsPlay;
     boolean isSeek = false;
     private TextView tvTime;
@@ -94,18 +95,21 @@ public class MusicActivity extends AppCompatActivity {
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(mHsPlay.getDuration() >0 && isSeek){
+                Log.d(TAG,"onProgressChanged() progress:"+progress+" fromUser:"+fromUser+" isSeek:"+isSeek);
+                if(mHsPlay.getDuration() >0 && fromUser &&isSeek){
                     mPlayPosition = mHsPlay.getDuration() * progress / 100;
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG,"onStartTrackingTouch()");
                 isSeek = true;
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG,"onStopTrackingTouch() isSeek:"+isSeek);
                 if(isSeek){
                     mHsPlay.seek(mPlayPosition);
                 }
@@ -150,11 +154,14 @@ public class MusicActivity extends AppCompatActivity {
                 tvTime.setText(HsTimeUtil.secdsToDateFormat(wlTimeInfoBean.getTotalTime(), wlTimeInfoBean.getTotalTime())
                         + "/" + HsTimeUtil.secdsToDateFormat(wlTimeInfoBean.getCurrentTime(), wlTimeInfoBean.getTotalTime()));
 
-                if(wlTimeInfoBean.getTotalTime()>0){
-                    mSeekBar.setProgress(wlTimeInfoBean.getCurrentTime() * 100  / wlTimeInfoBean.getTotalTime() );
-                }else{
-                    mSeekBar.setProgress(0);
+                if (!isSeek){
+                    if(wlTimeInfoBean.getTotalTime()>0){
+                        mSeekBar.setProgress(wlTimeInfoBean.getCurrentTime() * 100  / wlTimeInfoBean.getTotalTime() );
+                    }else{
+                        mSeekBar.setProgress(0);
+                    }
                 }
+
 
             }
         }
