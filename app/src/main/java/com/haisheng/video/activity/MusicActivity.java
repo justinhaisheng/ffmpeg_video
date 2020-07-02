@@ -144,7 +144,7 @@ public class MusicActivity extends AppCompatActivity {
     }
 
     public void begin(View view) {
-        mHsPlay.setSource("http://mpge.5nd.com/2015/2015-11-26/69708/1.mp3");
+        mHsPlay.setSource("/sdcard/a.mp4");
         mHsPlay.prepare();
     }
 

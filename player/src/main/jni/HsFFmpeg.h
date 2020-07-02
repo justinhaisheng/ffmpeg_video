@@ -8,6 +8,8 @@
 #include <pthread.h>
 #include "HsCalljava.h"
 #include "HsAudio.h"
+#include "HsVideo.h"
+
 extern "C"
 {
 #include "libavformat/avformat.h"
@@ -26,6 +28,7 @@ public:
     pthread_mutex_t decode_mutex;
     pthread_mutex_t seek_mutex;
     HsAudio *audio = NULL;
+    HsVideo *video = NULL;
     bool decode_exit;
 public:
     HsFFmpeg(HsCalljava* calljava,HsPlaystatus* playstatus, const char* url);
@@ -41,6 +44,8 @@ public:
 
     void seek(int64_t secs);
     void seekVolume(int volume);
+
+    int getCodecContext(AVCodecParameters *codecpar, AVCodecContext **avCodecContext);
 };
 
 

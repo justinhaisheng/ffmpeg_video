@@ -100,51 +100,36 @@ void HsFFmpeg::decodeFFmpegThread() {
                  this->audio->total_duration = pFormatCtx->duration / AV_TIME_BASE;
                  this->audio->FRAME_TIME_BASE = pFormatCtx->streams[i]->time_base;
              }
+         }else if(pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO){
+              if(!this->video){
+                  this->video = new HsVideo(playstatus,calljava);
+                  video->streamIndex = i;
+                  video->avCodecParameters = pFormatCtx->streams[i]->codecpar;
+                  this->video->FRAME_TIME_BASE = pFormatCtx->streams[i]->time_base;
+              }
          }
     }
-    //5、获取解码器
-    AVCodec *dec = avcodec_find_decoder(this->audio->codecpar->codec_id);
-    if(!dec){
-        if (LOG_DEBUG){
-            LOGE("获取不到解码器");
+
+    if (audio){
+        int retAudio = getCodecContext(audio->codecpar,&audio->avCodecContext);
+        if(retAudio!=0){
+            this->calljava->onCallError(retAudio,"cant not open audio strames error",CHILD_THREAD);
+            this->decode_exit = true;
+            pthread_mutex_unlock(&decode_mutex);
+            return;
         }
-        this->calljava->onCallError(1003,"获取不到解码器 error",CHILD_THREAD);
-        this->decode_exit = true;
-        pthread_mutex_unlock(&decode_mutex);
-        return;
     }
-    //6、利用解码器创建解码器上下文
-    AVCodecContext *codecContext = avcodec_alloc_context3(dec);
-    if (!codecContext){
-        if (LOG_DEBUG){
-            LOGE("获取不到解码器上下文");
+
+    if(video){
+        int retVideo = getCodecContext(video->avCodecParameters,&video->avCodecContext);
+        if(retVideo!=0){
+            this->calljava->onCallError(retVideo,"cant not open video strames error",CHILD_THREAD);
+            this->decode_exit = true;
+            pthread_mutex_unlock(&decode_mutex);
+            return;
         }
-        this->calljava->onCallError(1004,"获取不到解码器上下文 error",CHILD_THREAD);
-        this->decode_exit = true;
-        pthread_mutex_unlock(&decode_mutex);
-        return;
     }
-    this->audio->avCodecContext = codecContext;
-    if (avcodec_parameters_to_context(this->audio->avCodecContext,this->audio->codecpar) <0){
-        if (LOG_DEBUG){
-            LOGE("can not fill decodecctx");
-        }
-        this->calljava->onCallError(1005,"can not fill decodecctx error",CHILD_THREAD);
-        this->decode_exit = true;
-        pthread_mutex_unlock(&decode_mutex);
-        return;
-    }
-    //7、    打开解码器
-    if (avcodec_open2(this->audio->avCodecContext,dec,0) <0){
-        if(LOG_DEBUG)
-        {
-            LOGE("cant not open audio strames");
-        }
-        this->calljava->onCallError(1006,"cant not open audio strames error",CHILD_THREAD);
-        this->decode_exit = true;
-        pthread_mutex_unlock(&decode_mutex);
-        return;
-    }
+
     //回调java方法
     this->calljava->onCallPrepare(CHILD_THREAD);
     pthread_mutex_unlock(&decode_mutex);
@@ -158,9 +143,17 @@ void HsFFmpeg::startFFmpegThread() {
             return;
         }
     }
-
+    if (!this->video){
+        if(LOG_DEBUG){
+            LOGE("video is null");
+            decode_exit = true;
+            return;
+        }
+    }
+    this->video->play();//
     this->audio->play();//不停的去packet
-    int count = 0;
+    int audioCount = 0;
+    int videoCount = 0;
     while(playstatus != NULL && !playstatus->exit){
         if(this->playstatus->seek){
             av_usleep(1000*100);
@@ -185,12 +178,19 @@ void HsFFmpeg::startFFmpegThread() {
 
         if (ret == 0){
             if(avPacket->stream_index == this->audio->streamIndex){//音频数据
-                count++;
+                audioCount++;
                 if(LOG_DEBUG)
                 {
-                    LOGD("解封装第 %d 帧", count);
+                    LOGD("解封装第 %d 音频帧", audioCount);
                 }
                 this->audio->queue->putPacket(avPacket);
+            }else if(avPacket->stream_index == this->video->streamIndex){
+                videoCount++;
+                if(LOG_DEBUG)
+                {
+                    LOGD("解封装第 %d 视频帧", videoCount);
+                }
+                this->video->queue->putPacket(avPacket);
             }else{
                 av_packet_free(&avPacket);
                 av_free(avPacket);
@@ -216,15 +216,7 @@ void HsFFmpeg::startFFmpegThread() {
         }
     }
 
-    /*
-    while(this->audio->queue->getQueueSize()>0){
-        AVPacket* packet = av_packet_alloc();
-        this->audio->queue->getPacket(packet);
-        av_packet_free(&packet);
-        av_free(packet);
-        packet = NULL;
-    }
-    */
+
     if(LOG_DEBUG)
     {
         LOGD("解码完成");
@@ -312,4 +304,52 @@ void HsFFmpeg::seekVolume(int volume) {
     if(audio){
         audio->seekVolume(volume);
     }
+}
+
+int HsFFmpeg::getCodecContext(AVCodecParameters *codecpar, AVCodecContext **avCodecContext) {
+    //5、获取解码器
+    AVCodec *dec = avcodec_find_decoder(codecpar->codec_id);
+    if(!dec){
+        if (LOG_DEBUG){
+            LOGE("获取不到解码器");
+        }
+//        this->calljava->onCallError(1003,"获取不到解码器 error",CHILD_THREAD);
+//        this->decode_exit = true;
+//        pthread_mutex_unlock(&decode_mutex);
+        return -1003;
+    }
+    //6、利用解码器创建解码器上下文
+    AVCodecContext *codecContext = avcodec_alloc_context3(dec);
+    if (!codecContext){
+        if (LOG_DEBUG){
+            LOGE("获取不到解码器上下文");
+        }
+//        this->calljava->onCallError(1004,"获取不到解码器上下文 error",CHILD_THREAD);
+//        this->decode_exit = true;
+//        pthread_mutex_unlock(&decode_mutex);
+        return -1004;
+    }
+
+    if (avcodec_parameters_to_context(codecContext,codecpar) <0){
+        if (LOG_DEBUG){
+            LOGE("can not fill decodecctx");
+        }
+//        this->calljava->onCallError(1005,"can not fill decodecctx error",CHILD_THREAD);
+//        this->decode_exit = true;
+//        pthread_mutex_unlock(&decode_mutex);
+        return -1005;
+    }
+    //7、    打开解码器
+    if (avcodec_open2(codecContext,dec,0) <0){
+        if(LOG_DEBUG)
+        {
+            LOGE("cant not open audio strames");
+        }
+//        this->calljava->onCallError(1006,"cant not open audio strames error",CHILD_THREAD);
+//        this->decode_exit = true;
+//        pthread_mutex_unlock(&decode_mutex);
+        return -1006;
+    }
+    *avCodecContext = codecContext;
+    return 0;
 }

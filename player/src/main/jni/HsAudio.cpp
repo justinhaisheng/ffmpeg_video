@@ -383,7 +383,6 @@ void HsAudio::release() {
 
 void HsAudio::seekVolume(int volume) {
     if(volumeObject){
-        //this->volume = volume;
         if(volume > 30)
         {
             (*volumeObject)->SetVolumeLevel(volumeObject, (100 - volume) * -20);
