@@ -270,6 +270,11 @@ void HsFFmpeg::release() {
         delete audio;
         audio = NULL;
     }
+    if (video){
+        video->release();
+        delete video;
+        video = NULL;
+    }
     if(calljava){
         calljava = NULL;
     }

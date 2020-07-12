@@ -30,6 +30,7 @@ public:
     HsVideo(HsPlaystatus* playstatus,HsCalljava* calljava);
     ~HsVideo();
     void play();
+    void release();
 };
 
 

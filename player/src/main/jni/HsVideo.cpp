@@ -90,3 +90,21 @@ void* playVideo(void* data){
 void HsVideo::play() {
     pthread_create(&thread_play,NULL,playVideo,this);
 }
+
+void HsVideo::release() {
+    if (queue){
+        delete queue;
+        queue =NULL;
+    }
+    if (playstatus){
+        playstatus = NULL;
+    }
+    if (calljava){
+        calljava = NULL;
+    }
+    if(avCodecContext){
+        avcodec_close(avCodecContext);
+        avcodec_free_context(&avCodecContext);
+        avCodecContext = NULL;
+    }
+}
