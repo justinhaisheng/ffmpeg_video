@@ -184,6 +184,15 @@ public class HsPlay {
         }
     }
 
+    /*
+    *回调视频yuv数据
+    *@author luhaisheng
+    *@time 2020/7/29 16:37
+    */
+    private void onCallRenderYUV(int width,int height,byte[] y,byte[] u,byte[] v){
+        Log.e(TAG,"获取到视频的yuv数据 width:"+width+" height:"+height);
+    }
+
     private static HsTimeInfoBean hsTimeInfoBean;
     private void onCallTimeInfo(int currentTime, int totalTime)
     {

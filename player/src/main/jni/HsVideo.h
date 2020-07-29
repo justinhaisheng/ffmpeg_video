@@ -10,8 +10,11 @@
 #include "HsQueue.h"
 
 extern "C"{
+#include <libswscale/swscale.h>
 #include "include/libavcodec/avcodec.h"
 #include <libavutil/time.h>
+#include <libavutil/imgutils.h>
+
 };
 
 

@@ -144,7 +144,7 @@ public class MusicActivity extends AppCompatActivity {
     }
 
     public void begin(View view) {
-        mHsPlay.setSource("/sdcard/a.wmv");
+        mHsPlay.setSource("/sdcard/a.mp4");
         mHsPlay.prepare();
     }
 
